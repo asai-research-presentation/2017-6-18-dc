@@ -4,8 +4,10 @@
 #+LINK: img file:img/%s
 #+LINK: png file:img/%s.png
 #+LINK: jpg file:img/%s.jpg
+#+LINK: gif file:img/%s.gif
 #+LINK: spng file:img/static/%s.png
 #+LINK: sjpg file:img/static/%s.jpg
+#+LINK: sgif file:img/static/%s.gif
 
 #+begin_outline-text-1
 #+begin_center
@@ -23,15 +25,83 @@ Made by guicho2.71828 (Masataro Asai)
 #+end_note
 #+end_outline-text-1
 
-* The goal of the thesis
+* Motivation
 
-#+begin_larger
-Unified Search Theory^{TM} --- (maybe I retract it if I do not have time)
-#+end_larger
++ 
+  #+begin_larger
+  There are so many algorithms (A*, GBFS, LS, MRW, MCTS, RRT... let alone LAMA, probe, etc...)
+  #+end_larger
+  + Painful to see (although they are useful): stack exhaust
+  + Theoretical but qualitative understandings only
+  + Lacks the /single/ continuum (which is better for me)
++ 
+  #+begin_larger
+  I do not want to see "new" search algorithms anymore
+  #+end_larger
 
-* A* tiebreaking [RD RO] paper was about search space
+* Overview
 
-[[png:aaai16-3]]
++ 
+  #+begin_larger
+  Unified Search Theory^{TM} --- and I have a plan.
+  #+end_larger
+  + Reduce optimal search into satisficing search (AAAI16, JAIR17)
+  + Reduce satisficing search into blind search (ICAPS17)
+  + Reduce blind search into ... ? (ICAPS17, [Cohen and Beck, AAAI17])
++ I may retract the proposal if I do not have enough time.
+  + (I can just stick bunch of papers together)
+
+* The beginning: A* tiebreaking (AAAI2016)
+
+Tiebreaking in A* by balancing the search depth in each plateau → improved performance
+
+#+begin_container-fluid
+#+begin_row-fluid
+#+begin_span6
++ [[png:aaai16-3]]
+#+end_span6
+#+begin_span6
+#+begin_smaller
+| /                       | <            | >           | <>                |
+|                         | <c>          | <c>         | <c>               |
+|                         | ［h, FIFO］  | ［h, LIFO］ | ［h, RD, RO］     |
+| Domain Set              | (FD Default) |             | (Proposed)        |
+|-------------------------+--------------+-------------+-------------------|
+| LMcut                   |              |             |                   |
+| IPC Instances (1104)    | 558          | 565         | *572.8* (↑ 14.8) |
+| Zerocost Instances(680) | 256          | 279         | *294.2* (↑ 38.2) |
+| Sum(1724)               | 814          | 844         | *867.0* (↑ 53.0) |
+|-------------------------+--------------+-------------+-------------------|
+| M&S                     |              |             |                   |
+| IPC Instances (1104)    | 479          | *488*       | 484.0 (↑ 5.0)    |
+| Zerocost Instances(680) | 276          | 290         | *310.2* (↑ 34.2) |
+| Sum(1724)               | 755          | 778         | *794.2* (↑ 39.2) |
+|-------------------------+--------------+-------------+-------------------|
+#+end_smaller
+#+end_span6
+#+end_row-fluid
+#+end_container-fluid
+
+** The beginning: A* tiebreaking (AAAI2016)
+
+Standard A* priority queue:
+
++ First sort by $f=g+h$
++ Next sort by $h$
++ Implicitly sort by FIFO or LIFO or Random (/default tiebreaking/)
+
+Random Depth Tiebreaking:
+
++ First sort by $f=g+h$
++ Next sort by $h$
++ Randomly select the /depth bucket/ : depth = steps from the nearest 
++ Implicitly sort by FIFO or LIFO (/default tiebreaking/)
+
+* Turned out: A case similar to Type-based search for GBFS
+
+
+
+* The beginning: A* tiebreaking
 
 * Macro operators changes the search space structure
 
@@ -83,7 +153,7 @@ Percolation Theory
 
 ** Bond (edge) / Site (node) percolation
 
-[[gif:static/site-bond]]
+[[sgif:site-bond]]
 
 ** Percolation described by occupation ratio /r/
 
@@ -159,10 +229,10 @@ Sierpinsky's Gasket, Tree (L-system), Koch Curve
 #+begin_container-fluid
 #+begin_row-fluid
 #+begin_span6
-[[gif:static/sierpinski]]
+[[sgif:sierpinski]]
 #+end_span6
 #+begin_span6
-[[gif:static/koch]]
+[[sgif:koch]]
 #+end_span6
 #+end_row-fluid
 #+end_container-fluid
