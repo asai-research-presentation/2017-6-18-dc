@@ -16,6 +16,8 @@ Masataro Asai
 Final year in Ph.D program (1 years to go)
 
 University of Tokyo
+
+13 min.
 #+end_center
 
 #+begin_note
@@ -25,40 +27,59 @@ Made by guicho2.71828 (Masataro Asai)
 #+end_note
 #+end_outline-text-1
 
-* Motivation
+* Introduction
 
 + 
   #+begin_larger
-  There are so many algorithms (A*, GBFS, LS, MRW, MCTS, RRT... let alone LAMA, probe, etc...)
+  There are so many algorithms
+
+  (A*, LA*, PEA*, GBFS, LS, MRW, MCTS, RRT... LAMA, probe, etc...)
   #+end_larger
-  + Painful to see (although they are useful): stack exhaust
-  + Theoretical but qualitative understandings only
-  + Lacks the /single/ continuum (which is better for me)
+  + Theoretical but qualitative property : (Probabilistic) Completeness, Optimality
+    + e.g. If it is incomplete, *how* incomplete it is?
+  + Lacks the */quantitative continuum/* : How/Why they differ, measured by numbers (not performance)
 + 
   #+begin_larger
-  I do not want to see "new" search algorithms anymore
+  Can we describe the behavior of various algorithms uniquely in a simple measure?
   #+end_larger
 
-* Overview
+* The Problems
 
-+ 
-  #+begin_larger
-  Unified Search Theory^{TM} --- and I have a plan.
-  #+end_larger
-  + Reduce optimal search into satisficing search (AAAI16, JAIR17)
-  + Reduce satisficing search into blind search (ICAPS17)
-  + Reduce blind search into ... ? (ICAPS17, [Cohen and Beck, AAAI17])
-+ I may retract the proposal if I do not have enough time.
-  + (I can just stick bunch of papers together)
++ Different classes of algorithms (optimal vs. satisficing search)
+  + Different theoretical requirements
++ The behavior might be affected by the heuristic functions
+  + Not able to discuss the algorithm behavior
++ Simply wide variety of algorithms
+  + Methods for analysis should be sufficiently general
 
-* The beginning: A* tiebreaking (AAAI2016)
+** The beginning: A* tiebreaking (AAAI2016)
+
+Standard A* OPEN list [f,h,＊] is sorted by lexicographical ordering
+
++ First sort by $f=g+h$
++ Next sort by $h$ (tiebreaking)
++ ＊ : *Implicitly* sort by FIFO or LIFO or Random (2nd level: /default tiebreaking/)
+  + Has tremendous effect on performance on domains where *most edge costs are 0*
+  + Because it causes many ties
+  + Domains w/ 0-cost edges is harder than $\mathbb{Z}^{\gt 0}$ -cost edges (Aghighi 15,16)
+
+Random Depth Tiebreaking [f,h,<d>,*] : Balanced expansion among *plateau depths*
+
++ f: First sort by $f=g+h$
++ h: Next sort by $h$
++ <d>: Randomly select a /depth bucket/ : depth = steps from the nearest ancestor with the same f,h
++ ＊ : Implicitly sort by FIFO or LIFO or Random (/default tiebreaking/)
+
+** The beginning: A* tiebreaking (AAAI2016)
 
 Tiebreaking in A* by balancing the search depth in each plateau → improved performance
 
 #+begin_container-fluid
 #+begin_row-fluid
 #+begin_span6
-+ [[png:aaai16-3]]
+[[png:aaai16-3]]
+
+Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 #+end_span6
 #+begin_span6
 #+begin_smaller
@@ -82,52 +103,325 @@ Tiebreaking in A* by balancing the search depth in each plateau → improved per
 #+end_row-fluid
 #+end_container-fluid
 
-** The beginning: A* tiebreaking (AAAI2016)
+** Very similar concept was used for satisficing search, with a different context
 
-Standard A* priority queue:
+*Type-GBFS: Search Diversification* method for *GBFS* (satisficing search)
 
-+ First sort by $f=g+h$
-+ Next sort by $h$
-+ Implicitly sort by FIFO or LIFO or Random (/default tiebreaking/)
++ Type-based bucket $\langle g, h \rangle$ (Xie 14) ::
+  + Store the nodes according to the keys
+  + Select a random node in a random bucket for each expansion from the OPEN list
++ Type-GBFS ::
+  + Alternate Type-bucket expansion and GBFS expansion
++ RandomDepth (AAAI16) uses type-bucket */within a plateau made by h/* ::
+  $[ f, h, \langle d \rangle ]$ --- Similar technique, but for optimal search
+  
 
-Random Depth Tiebreaking:
++ Satisficing Search and Optimising Search
+#+begin_xlarge
++ Will it blend? (Yes it does!)
+#+end_xlarge
 
-+ First sort by $f=g+h$
-+ Next sort by $h$
-+ Randomly select the /depth bucket/ : depth = steps from the nearest 
-+ Implicitly sort by FIFO or LIFO (/default tiebreaking/)
+** A* behavior revisited
 
-* Turned out: A case similar to Type-based search for GBFS
+[[png:astar/astar1]]
 
+*** A* behavior revisited
 
+  [[png:astar/astar2]]
 
-* The beginning: A* tiebreaking
+*** A* behavior revisited
 
-* Macro operators changes the search space structure
+  [[png:astar/astar3]]
 
-[[png:macro/search0]]
+*** A* behavior revisited
 
-* Macro operators changes the search space structure
+ [[png:astar/astar4]]
 
-[[png:macro/search1]]
++ *The order of expansion in each plateau* does not matter for the optimality
 
-* Macro operators changes the search space structure :noexport:
++ In each plateau, *the path can be arbitrarily long*
 
-[[png:macro/search.2]]
+#+begin_alignright
+#+begin_larger
++ We are runnning a *satisficing search* on each plateau
+#+end_larger
+#+end_alignright
 
-* Proposal: Unifying Framework for Analyzing Search Space
+** Reinterpret A∗ as */iterations of satisficing search on plateaus/* (JAIR17, HSDIP17)
+
++ A* $[ f, h, \text{fifo} ]$  : Performing *GBFS* $[ h, \text{fifo} ]$ *on each plateau(f)*
++ A* $[ f, \text{fifo} ]$  : *Blind breadth-first search* $[ \text{fifo} ]$ *on each plateau(f)* → slower
+
+#+begin_src bash
+while true
+    satisficing_search( plateau(f))
+    if plateau (f) is SAT; then
+       return solution
+    else
+       Increase f
+#+end_src
+
+*** A* as satisficing search
+
+ #+begin_src bash
+ while true
+     satisficing_search( plateau(f))
+     if plateau (f) is SAT; then
+        return solution
+     else
+        Increase f
+ #+end_src
+
+[[png:sat/sat-astar1]]
+
+*** A* as satisficing search
+
+ #+begin_src bash
+ while true
+     satisficing_search( plateau(f))
+     if plateau (f) is SAT; then
+        return solution
+     else
+        Increase f
+ #+end_src
+
+[[png:sat/sat-astar2]]
+
+*** A* as satisficing search
+
+ #+begin_src bash
+ while true
+     satisficing_search( plateau(f))
+     if plateau (f) is SAT; then
+        return solution
+     else
+        Increase f
+ #+end_src
+
+[[png:sat/sat-astar3]]
+
+*** A* as satisficing search
+
+#+begin_container-fluid
+#+begin_row-fluid
+#+begin_span7
+ #+begin_src bash
+ while true
+     satisficing_search( plateau(f))
+     if plateau (f) is SAT; then
+        return solution
+     else
+        Increase f
+ #+end_src
+#+end_span7
+#+begin_span5
+Implication: 
+#+begin_larger
++ *Any complete satisficing technique* can be embedded in optimal planning
+#+end_larger
+#+end_span5
+#+end_row-fluid
+#+begin_row-fluid
+#+begin_span7
+[[png:sat/sat-astar4]]
+#+end_span7
+#+begin_span5
+#+begin_larger
++ Results are optimal as long as *f* is admissible
+#+end_larger
+#+end_span5
+#+end_row-fluid
+#+end_container-fluid
+
+#+begin_larger
++ Now forget about *optimal*, let's focus on *satisficing*
+#+end_larger
+
+* The Problems
+
++ /Different classes of algorithms (optimal vs. satisficing search)/ *DONE*
+  + /Different theoretical requirements/
++ *The behavior might be affected by the heuristic functions*
+  + Not able to discuss the algorithm behavior
++ Simply wide variety of algorithms
+  + Methods for analysis should be sufficiently general
+
+** Heuristic Satisficing Search
+
+Less requirements → a *larger* variety of algorithms & ad-hoc ness
+
+| Purposes                 | Approach      | Affect $h$ ? |
+|--------------------------+---------------+--------------|
+| Avoid local minima       | Randomization | ✗            |
+|--------------------------+---------------+--------------|
+| Escaping local minima    | Local Search  | ✗            |
+|                          | Preferred Ops | ✗            |
+|--------------------------+---------------+--------------|
+| Minimize heuristic eval. | Lazy Eval     | ○           |
+|--------------------------+---------------+--------------|
+
+Lazy Eval == using a different heuristics
+
+Other methods (avoidance, escape) are *Search Diversification*
+
+Thus we focus on *Search Diversification*
+
+** Search Diversification
+
+[[png:diversify/1]]
+
+*** Search Diversification
+[[png:diversify/2]]
+
+*** Search Diversification
+[[png:diversify/3]]
+
+*** Search Diversification
+[[png:diversify/4]]
+
+*** Search Diversification
+[[png:diversify/5]]
+
+*** Search Diversification
+
+[[png:diversify/final]]
+
+** Two modes of diversification : Intra-plateau and Inter-plateau (ICAPS17)
+
+[[png:plateau/final]]
+
+Previous methods have the mixed effect of both (e.g. GBFS-LE)
+
+** Intra-vs-Inter are orthogonal & complementary
+
+#+begin_container-fluid
+#+begin_row-fluid
+#+begin_span6
+[[png:icaps17-results]]
+#+end_span6
+#+begin_span6
++ With both modes enabled, effects combine
+#+end_span6
+#+end_row-fluid
+#+end_container-fluid
+
+** Remove the effect of heuristics from the discussion
+
+#+begin_container-fluid
+#+begin_row-fluid
+#+begin_span6
+[[png:diversify/final]]
+#+end_span6
+#+begin_span6
++ Both modes are *heuristic-agnostic*
+  + → based on a knowledge-free (blind) method
+  + *Now we no longer have to care about heuristics!*
+#+end_span6
+#+end_row-fluid
+#+end_container-fluid
+
+* The Problems
+
++ /Different classes of algorithms (optimal vs. satisficing search)/ *DONE*
+  + /Different theoretical requirements/
++ /The behavior might be affected by the heuristic functions/ *DONE*
+  + /Not able to discuss the algorithm behavior/
++ *Simply wide variety of algorithms* 
+  + Methods for analysis should be sufficiently general
+
+** Analysing the blind search behavior
+
+What do we know about blind search? --- not much
+
++ Search depth, branching factor
++ but they do not describe the actual "shape" of the resulting graph
++ W/O state information (e.g. atoms) --- for continuous domains (e.g. RRT)
+
+[[png:fractals/shape]]
+
+** Fractals: A mathematical tool to analyse shapes
+
+#+begin_container-fluid
+#+begin_row-fluid
+#+begin_span6
+Mathematical fractals
+
+[[sgif:koch]]
+
+[[sgif:sierpinski]]
+#+end_span6
+#+begin_span6
+Random fractals (we are interested in these)
+
+[[png:fractals/dla]]
+#+end_span6
+#+end_row-fluid
+#+end_container-fluid
+
+** Fractal dimension: A mathematical tool to analyse fractals
+
+How the number of points react to the different scaling
+
+Note: Complicated /measure theory/ involved, we don't have to deal with the details
+
+[[png:fractals/dimention]]
+
+** Bond Invasion Percolation (ICAPS17)
+
+A practical diversification method based on a fractal
+
+[[png:fractals/bip]]
+
+** Improves performance as a diversification method (ICAPS17)
+
+Benchmark on FF heuristic
+
+| Diversified FBFS                   | IPC11+IPC14 score |
+|------------------------------------+-------------------|
+| Baseline                           |               192 |
+| (inter + intra plateau) Type-based |             223.9 |
+| (inter + intra plateau) BIP        |           *237.7* |
+
+** Analysing Various Search Algorithms as Fractals
+
+(Randomized) search algorithm == Generator of a (random) fractal
+
+[[png:fractals/eden]]
+
+*** Analysing Various Search Algorithms as Fractals
+
+(Randomized) search algorithm == Generator of a (random) fractal
+
+[[png:fractals/eden-2]]
+
+** Fractals offer a mathematical tools to analyse algorithms
+
+Example:
+
+[[png:fractals/intersection]]
+
+* Conclusion
+
++ Unified Search Theory^{TM}:
+  + Optimal search (A*) is a sequence of satisficing search
+  + Satisficing heuristic search is a combination of blind search
+  + Fractal theory provides mathematical tools for understanding blind search
+
+* Old materials                                                    :noexport:
+
+** Proposal: Unifying Framework for Analyzing Search Space
 
 [[png:triangle]]
 
-* Proposal: Unifying Framework for Analyzing Search Space
+** Proposal: Unifying Framework for Analyzing Search Space
 
 [[png:triangle0]]
 
-* Proposal: Unifying Framework for Analyzing Search Space
+** Proposal: Unifying Framework for Analyzing Search Space
 
 [[png:triangle1]]
 
-* 
+** 
 
 #+begin_xlarge
 #+begin_center
@@ -135,81 +429,81 @@ Percolation Theory
 #+end_center
 #+end_xlarge
 
-** Percolation Theory                                              :noexport:
+*** Percolation Theory                                             :noexport:
 
- [[png:percolate/circuit]]
+  [[png:percolate/circuit]]
 
-** Example: Percolation in 2-dimentional grids
+*** Example: Percolation in 2-dimentional grids
 
- A node is either *occupied* or *unoccupied*
+  A node is either *occupied* or *unoccupied*
 
- [[png:percolate/percolated0]]
+  [[png:percolate/percolated0]]
 
- #+begin_alignright
- #+begin_larger
- + Key interst: *when/how* a graph percolates?
- #+end_larger
- #+end_alignright
+  #+begin_alignright
+  #+begin_larger
+  + Key interst: *when/how* a graph percolates?
+  #+end_larger
+  #+end_alignright
 
-** Bond (edge) / Site (node) percolation
+*** Bond (edge) / Site (node) percolation
 
 [[sgif:site-bond]]
 
-** Percolation described by occupation ratio /r/
+*** Percolation described by occupation ratio /r/
 
- [[png:percolate/cluster0]]
+  [[png:percolate/cluster0]]
 
-** Percolation described by occupation ratio /r/
+*** Percolation described by occupation ratio /r/
 
- [[png:percolate/cluster1]]
+  [[png:percolate/cluster1]]
 
-** Percolation described by occupation ratio /r/
+*** Percolation described by occupation ratio /r/
 
 [[png:percolate/cluster2]]
 
-** Percolation described by occupation ratio /r/
+*** Percolation described by occupation ratio /r/
 
 Generates a connected cluster with complex shape
 
 [[png:percolate/cluster3]]
 
-** Phase Transition
+*** Phase Transition
 
 [[png:percolate/cluster4]]
 
-** Macros may be shifting the ratio to the right
+*** Macros may be shifting the ratio to the right
 
- [[png:percolate/cluster5]]
+  [[png:percolate/cluster5]]
 
-** Forward Search : Increasing /r/ as the search progresses
+*** Forward Search : Increasing /r/ as the search progresses
 
- [[png:percolate/cluster6]]
+  [[png:percolate/cluster6]]
 
-** Open Questions
+*** Open Questions
 
- + *Prove the connection between macro-operators and critical value*
-   + I am testing if randomly generated *Junk Macros* improve the performance
-     + *Ongoing work --- /positive results/ (next slide)*
- + *How /existing macro-approaches/ change the connectivity?*
-   + MacroFF(Botea05), Marvin(Coles04,07) MUM(Chrpa14), CAP(Asai15), BLOMA(Siddiqui15)
- + *What is the /r_c/ of each domain?*
-   + critical value of Logistics is X, Barman is Y ...
- + *At which /r/ does each search algorithm find a solution?*
-   + Lookahead search, GBFS, Type-GBFS, A*, Random Walk...
+  + *Prove the connection between macro-operators and critical value*
+    + I am testing if randomly generated *Junk Macros* improve the performance
+      + *Ongoing work --- /positive results/ (next slide)*
+  + *How /existing macro-approaches/ change the connectivity?*
+    + MacroFF(Botea05), Marvin(Coles04,07) MUM(Chrpa14), CAP(Asai15), BLOMA(Siddiqui15)
+  + *What is the /r_c/ of each domain?*
+    + critical value of Logistics is X, Barman is Y ...
+  + *At which /r/ does each search algorithm find a solution?*
+    + Lookahead search, GBFS, Type-GBFS, A*, Random Walk...
 
-*** Preliminary results on Junk Macros
+**** Preliminary results on Junk Macros
 
- [[png:percolate/junk]]
+  [[png:percolate/junk]]
 
- #+begin_alignright
- Promising direction!
- #+end_alignright
+  #+begin_alignright
+  Promising direction!
+  #+end_alignright
 
-* Unifying Framework for Analyzing Search Space
+** Unifying Framework for Analyzing Search Space
 
 [[png:triangle2]]
 
-* 
+** 
 
 #+begin_xlarge
 #+begin_center
@@ -221,7 +515,7 @@ Fractals
 No time, only described briefly
 #+end_alignright
 
-** Fractals 
+*** Fractals 
 
 Sierpinsky's Gasket, Tree (L-system), Koch Curve
 
@@ -238,49 +532,49 @@ Sierpinsky's Gasket, Tree (L-system), Koch Curve
 #+end_container-fluid
 
 
-** Fractal Dimension: How many nodes are included when the */scale/* changes?
+*** Fractal Dimension: How many nodes are included when the */scale/* changes?
 
 Takes Fractional value; != Space Dimension
 
 [[png:fractals/dimention]]
 
-** Fractals are defined by generative rules: example
+*** Fractals are defined by generative rules: example
 
- [[png:fractals/ba]]
+  [[png:fractals/ba]]
 
-** Fractals are defined by generative rules: example
+*** Fractals are defined by generative rules: example
 
- [[png:fractals/dla]]
+  [[png:fractals/dla]]
 
-** Fractals are defined by generative rules: example
+*** Fractals are defined by generative rules: example
 
- [[png:fractals/eden]]
+  [[png:fractals/eden]]
 
-** */Search space/* is also defined by expansion rules
+*** */Search space/* is also defined by expansion rules
 
- [[png:fractals/eden-2]]
+  [[png:fractals/eden-2]]
 
-** Connections between Fractals and Search Algorithms
+*** Connections between Fractals and Search Algorithms
 
 [[png:fractals/fractal]]
 
-** Connections between Fractals and Search Algorithms
+*** Connections between Fractals and Search Algorithms
 
 [[png:fractals/fractal2]]
 
-** Connections between Fractals and Search Algorithms
+*** Connections between Fractals and Search Algorithms
 
 [[png:fractals/fractal3]]
 
-** Connections between Fractals and Percolation
+*** Connections between Fractals and Percolation
 
- [[png:fractals/cluster]]
+  [[png:fractals/cluster]]
 
-* Unifying Framework for Analyzing Search Space
+** Unifying Framework for Analyzing Search Space
 
 [[png:triangle3]]
 
-* Conclusion: Thesis Abstract
+** Conclusion: Thesis Abstract
 
 #+begin_larger
 + *Establish a framework* for analysing the search behavior based on percolation theory
@@ -301,48 +595,48 @@ Thank you for listening!
 #+end_center
 #+end_larger
 
-*             not-used                                             :noexport:
+**             not-used                                            :noexport:
 
-** Meta-parameter which defines the shape: Fractal dimension
+*** Meta-parameter which defines the shape: Fractal dimension
 
- a statistical index of complexity comparing how detail in a pattern changes with the scale at which it is measured
+  a statistical index of complexity comparing how detail in a pattern changes with the scale at which it is measured
 
-*** Computing the Fractal Dimension
-
-
+**** Computing the Fractal Dimension
 
 
 
-*** Connections between Fractals and Search Algorithms
 
-  [[png:fractals/fractal]]
-** Possible Benefits:
 
- + More thoeries about macro operators. Only thing we know:
-   + "*Increases branching factor*"
-   + *!=* *effective* branching factor by heuristic search
- + Understand Search Algorithms by the *shape of the explored space*
-   + What is the fundamental difference between 2 algorithms?
-** Effective Search Space
+**** Connections between Fractals and Search Algorithms
 
- Search space evaluated by the search algorithm ⊆ (entire) search space
+   [[png:fractals/fractal]]
+*** Possible Benefits:
 
- [[png:fractals/ess]]
+  + More thoeries about macro operators. Only thing we know:
+    + "*Increases branching factor*"
+    + *!=* *effective* branching factor by heuristic search
+  + Understand Search Algorithms by the *shape of the explored space*
+    + What is the fundamental difference between 2 algorithms?
+*** Effective Search Space
 
- Each search algorithm defines its */shape/*
+  Search space evaluated by the search algorithm ⊆ (entire) search space
 
-** Inherent Danger of Showing Research Ideas at DC                 :noexport:
- 
- I am inclined to continuing research after graduation as a PostDoc / maybe in industry, but showing too much
- unreliable ideas here may cause this:
+  [[png:fractals/ess]]
 
- #+begin_alignright
- (just be sure, I'm *not* claiming I am Einstein, no!)
- #+end_alignright
+  Each search algorithm defines its */shape/*
 
- [[png:einstein]]
-
- # + Do you want to hire people with crazy ideas? or
- # + Do you want to hire people with safe ideas?
- # + Depending on the answers, I should not show some part of the slides in this talk
+*** Inherent Danger of Showing Research Ideas at DC                :noexport:
   
+  I am inclined to continuing research after graduation as a PostDoc / maybe in industry, but showing too much
+  unreliable ideas here may cause this:
+
+  #+begin_alignright
+  (just be sure, I'm *not* claiming I am Einstein, no!)
+  #+end_alignright
+
+  [[png:einstein]]
+
+  # + Do you want to hire people with crazy ideas? or
+  # + Do you want to hire people with safe ideas?
+  # + Depending on the answers, I should not show some part of the slides in this talk
+   
