@@ -259,15 +259,15 @@ Implication:
 
 Less requirements → a *larger* variety of algorithms & ad-hoc ness
 
-| Purposes                 | Approach      | Affect $h$ ? |
-|--------------------------+---------------+--------------|
-| Avoid local minima       | Randomization | ✗            |
-|--------------------------+---------------+--------------|
-| Escaping local minima    | Local Search  | ✗            |
-|                          | Preferred Ops | ✗            |
-|--------------------------+---------------+--------------|
-| Minimize heuristic eval. | Lazy Eval     | ○           |
-|--------------------------+---------------+--------------|
+| Purposes                   | Approach      | Affect $h$ ? |
+|----------------------------+---------------+--------------|
+| Minimize the cost of eval. | Lazy Eval     | ○           |
+|----------------------------+---------------+--------------|
+| Avoid local minima         | Randomization | ✗            |
+|----------------------------+---------------+--------------|
+| Escaping local minima      | Local Search  | ✗            |
+|                            | Preferred Ops | ✗            |
+|----------------------------+---------------+--------------|
 
 Lazy Eval == using a different heuristics
 
@@ -331,7 +331,7 @@ What do we know about blind search? --- not much
 
 + Search depth, branching factor
 + but they do not describe the actual "shape" of the resulting graph
-+ W/O state information (e.g. atoms) --- for continuous domains (e.g. RRT)
+# + W/O state information (e.g. atoms) --- for continuous domains (e.g. RRT)
 
 [[png:fractals/shape]]
 
@@ -371,6 +371,8 @@ Note: Complicated /measure theory/ involved, we don't have to deal with the deta
 ** Bond Invasion Percolation (ICAPS17)
 
 A practical diversification for Classical Planning
+
+　
 
 [[png:fractals/bip]]
 
