@@ -299,7 +299,7 @@ Thus we focus on *Search Diversification*
 
 [[png:plateau/final]]
 
-Previous work have the mixed effect of both (e.g. GBFS-LE)
+Previous work have the mixed effect of both (e.g. GBFS-LE, MRW)
 
 ** Intra-vs-Inter are orthogonal & complementary
 
