@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-06-16 金 11:06 -->
+<!-- 2017-06-18 日 09:55 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Exploiting Search Space Structure in Classical Planning: Analyses and Algorithms (DC talk)</title>
@@ -184,12 +184,12 @@ Made by guicho2.71828 (Masataro Asai)
 </div>
 
 <div id="outline-container-orgheadline1" class="outline-2">
-<h2 id="orgheadline1"><span class="section-number-2">1</span> Introduction</h2>
+<h2 id="orgheadline1"><span class="section-number-2">1</span> Introduction &amp; Motivation</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li><div class="larger">
 <p>
-There are so many algorithms
+<b>There are too many algorithms!</b>
 </p>
 
 <p>
@@ -214,214 +214,24 @@ Can we describe the behavior of various algorithms uniquely in a simple measure?
 </div>
 </div>
 
-<div id="outline-container-orgheadline14" class="outline-2">
-<h2 id="orgheadline14"><span class="section-number-2">2</span> The Problems</h2>
+<div id="outline-container-orgheadline11" class="outline-2">
+<h2 id="orgheadline11"><span class="section-number-2">2</span> The Problems</h2>
 <div class="outline-text-2" id="text-2">
 <ul class="org-ul">
 <li>Different classes of algorithms (optimal vs. satisficing search)
 <ul class="org-ul">
 <li>Different theoretical requirements</li>
 </ul></li>
-<li>The behavior might be affected by the heuristic functions
-<ul class="org-ul">
-<li>Not able to discuss the algorithm behavior</li>
-</ul></li>
-<li>Simply wide variety of algorithms
-<ul class="org-ul">
-<li>Methods for analysis should be sufficiently general</li>
-</ul></li>
 </ul>
 </div>
 
-<div id="outline-container-orgheadline2" class="outline-3">
-<h3 id="orgheadline2"><span class="section-number-3">2.1</span> The beginning: A* tiebreaking (AAAI2016)</h3>
+<div id="outline-container-orgheadline5" class="outline-3">
+<h3 id="orgheadline5"><span class="section-number-3">2.1</span> A* (optimal search) works as follows</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
-Standard A* OPEN list [f,h,＊] is sorted by lexicographical ordering
+Expands the nodes in increasing order of <b>f</b> value
 </p>
 
-<ul class="org-ul">
-<li>First sort by $f=g+h$</li>
-<li>Next sort by $h$(tiebreaking)</li>
-<li>＊ : <b>Implicitly</b> sort by FIFO or LIFO or Random (2nd level: <i>default tiebreaking</i>)
-<ul class="org-ul">
-<li>Has tremendous effect on performance on domains where <b>most edge costs are 0</b></li>
-<li>Because it causes many ties</li>
-<li>Domains w/ 0-cost edges is harder than $\mathbb{Z}^{\gt 0}$-cost edges (Aghighi 15,16)</li>
-</ul></li>
-</ul>
-
-<p>
-Random Depth Tiebreaking [f,h,&lt;d&gt;,*] : Balanced expansion among <b>plateau depths</b>
-</p>
-
-<ul class="org-ul">
-<li>f: First sort by $f=g+h$</li>
-<li>h: Next sort by $h$</li>
-<li>&lt;d&gt;: Randomly select a <i>depth bucket</i> : depth = steps from the nearest ancestor with the same f,h</li>
-<li>＊ : Implicitly sort by FIFO or LIFO or Random (<i>default tiebreaking</i>)</li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-orgheadline3" class="outline-3">
-<h3 id="orgheadline3"><span class="section-number-3">2.2</span> The beginning: A* tiebreaking (AAAI2016)</h3>
-<div class="outline-text-3" id="text-2-2">
-<p>
-Tiebreaking in A* by balancing the search depth in each plateau → improved performance
-</p>
-
-<div class="container-fluid">
-<div class="row-fluid">
-<div class="span6">
-
-<div class="figure">
-<p><img src="img/aaai16-3.png" alt="aaai16-3.png" />
-</p>
-</div>
-
-<p>
-Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
-</p>
-
-</div>
-<div class="span6">
-<div class="smaller">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="org-left" />
-</colgroup>
-
-<colgroup>
-<col  class="org-center" />
-
-<col  class="org-center" />
-</colgroup>
-
-<colgroup>
-<col  class="org-center" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="org-left">&#xa0;</th>
-<th scope="col" class="org-center">［h, FIFO］</th>
-<th scope="col" class="org-center">［h, LIFO］</th>
-<th scope="col" class="org-center">［h, RD, RO］</th>
-</tr>
-
-<tr>
-<th scope="col" class="org-left">Domain Set</th>
-<th scope="col" class="org-center">(FD Default)</th>
-<th scope="col" class="org-center">&#xa0;</th>
-<th scope="col" class="org-center">(Proposed)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="org-left">LMcut</td>
-<td class="org-center">&#xa0;</td>
-<td class="org-center">&#xa0;</td>
-<td class="org-center">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="org-left">IPC Instances (1104)</td>
-<td class="org-center">558</td>
-<td class="org-center">565</td>
-<td class="org-center"><b>572.8</b> (↑ 14.8)</td>
-</tr>
-
-<tr>
-<td class="org-left">Zerocost Instances(680)</td>
-<td class="org-center">256</td>
-<td class="org-center">279</td>
-<td class="org-center"><b>294.2</b> (↑ 38.2)</td>
-</tr>
-
-<tr>
-<td class="org-left">Sum(1724)</td>
-<td class="org-center">814</td>
-<td class="org-center">844</td>
-<td class="org-center"><b>867.0</b> (↑ 53.0)</td>
-</tr>
-</tbody>
-<tbody>
-<tr>
-<td class="org-left">M&amp;S</td>
-<td class="org-center">&#xa0;</td>
-<td class="org-center">&#xa0;</td>
-<td class="org-center">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="org-left">IPC Instances (1104)</td>
-<td class="org-center">479</td>
-<td class="org-center"><b>488</b></td>
-<td class="org-center">484.0 (↑ 5.0)</td>
-</tr>
-
-<tr>
-<td class="org-left">Zerocost Instances(680)</td>
-<td class="org-center">276</td>
-<td class="org-center">290</td>
-<td class="org-center"><b>310.2</b> (↑ 34.2)</td>
-</tr>
-
-<tr>
-<td class="org-left">Sum(1724)</td>
-<td class="org-center">755</td>
-<td class="org-center">778</td>
-<td class="org-center"><b>794.2</b> (↑ 39.2)</td>
-</tr>
-</tbody>
-</table>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgheadline4" class="outline-3">
-<h3 id="orgheadline4"><span class="section-number-3">2.3</span> Very similar concept was used for satisficing search, with a different context</h3>
-<div class="outline-text-3" id="text-2-3">
-<p>
-<b>Type-GBFS: Search Diversification</b> method for <b>GBFS</b> (satisficing search)
-</p>
-
-<dl class="org-dl">
-<dt>Type-based bucket $\langle g, h \rangle$(Xie 14)</dt><dd><ul class="org-ul">
-<li>Store the nodes according to the keys</li>
-<li>Select a random node in a random bucket for each expansion from the OPEN list</li>
-</ul></dd>
-<dt>Type-GBFS</dt><dd><ul class="org-ul">
-<li>Alternate Type-bucket expansion and GBFS expansion</li>
-</ul></dd>
-<dt>RandomDepth (AAAI16) uses type-bucket <b><i>within a plateau made by h</i></b></dt><dd>$[ f, h, \langle d \rangle ]$&#x2014; Similar technique, but for optimal search</dd>
-</dl>
-
-
-<ul class="org-ul">
-<li>Satisficing Search and Optimising Search</li>
-</ul>
-<div class="xlarge">
-<ul class="org-ul">
-<li>Will it blend? (Yes it does!)</li>
-</ul>
-
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgheadline8" class="outline-3">
-<h3 id="orgheadline8"><span class="section-number-3">2.4</span> A* behavior revisited</h3>
-<div class="outline-text-3" id="text-2-4">
 
 <div class="figure">
 <p><img src="img/astar/astar1.png" alt="astar1.png" />
@@ -429,9 +239,13 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline5" class="outline-4">
-<h4 id="orgheadline5"><span class="section-number-4">2.4.1</span> A* behavior revisited</h4>
-<div class="outline-text-4" id="text-2-4-1">
+<div id="outline-container-orgheadline2" class="outline-4">
+<h4 id="orgheadline2"><span class="section-number-4">2.1.1</span> A* (optimal search) works as follows</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Expands the nodes in increasing order of <b>f</b> value
+</p>
+
 
 <div class="figure">
 <p><img src="img/astar/astar2.png" alt="astar2.png" />
@@ -440,9 +254,13 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline6" class="outline-4">
-<h4 id="orgheadline6"><span class="section-number-4">2.4.2</span> A* behavior revisited</h4>
-<div class="outline-text-4" id="text-2-4-2">
+<div id="outline-container-orgheadline3" class="outline-4">
+<h4 id="orgheadline3"><span class="section-number-4">2.1.2</span> A* (optimal search) works as follows</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+Expands the nodes in increasing order of <b>f</b> value
+</p>
+
 
 <div class="figure">
 <p><img src="img/astar/astar3.png" alt="astar3.png" />
@@ -451,9 +269,13 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline7" class="outline-4">
-<h4 id="orgheadline7"><span class="section-number-4">2.4.3</span> A* behavior revisited</h4>
-<div class="outline-text-4" id="text-2-4-3">
+<div id="outline-container-orgheadline4" class="outline-4">
+<h4 id="orgheadline4"><span class="section-number-4">2.1.3</span> A* (optimal search) works as follows</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+Expands the nodes in increasing order of <b>f</b> value
+</p>
+
 
 <div class="figure">
 <p><img src="img/astar/astar4.png" alt="astar4.png" />
@@ -479,9 +301,9 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline13" class="outline-3">
-<h3 id="orgheadline13"><span class="section-number-3">2.5</span> Reinterpret A∗ as <b><i>iterations of satisficing search on plateaus</i></b> (JAIR17, HSDIP17)</h3>
-<div class="outline-text-3" id="text-2-5">
+<div id="outline-container-orgheadline10" class="outline-3">
+<h3 id="orgheadline10"><span class="section-number-3">2.2</span> Reinterpret A∗ as <b><i>iterations of satisficing search on plateaus</i></b> (JAIR17, HSDIP17)</h3>
+<div class="outline-text-3" id="text-2-2">
 <ul class="org-ul">
 <li>A* $[ f, h, \text{fifo} ]$: Performing <b>GBFS</b> $[ h, \text{fifo} ]$<b>on each plateau(f)</b></li>
 <li>A* $[ f, \text{fifo} ]$: <b>Blind breadth-first search</b> $[ \text{fifo} ]$<b>on each plateau(f)</b> → slower</li>
@@ -499,9 +321,9 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline9" class="outline-4">
-<h4 id="orgheadline9"><span class="section-number-4">2.5.1</span> A* as satisficing search</h4>
-<div class="outline-text-4" id="text-2-5-1">
+<div id="outline-container-orgheadline6" class="outline-4">
+<h4 id="orgheadline6"><span class="section-number-4">2.2.1</span> A* as satisficing search (JAIR17, HSDIP17)</h4>
+<div class="outline-text-4" id="text-2-2-1">
 <div class="org-src-container">
 
 <pre class="src src-bash"><span style="color: #a020f0;">while</span> true
@@ -521,9 +343,9 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline10" class="outline-4">
-<h4 id="orgheadline10"><span class="section-number-4">2.5.2</span> A* as satisficing search</h4>
-<div class="outline-text-4" id="text-2-5-2">
+<div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">2.2.2</span> A* as satisficing search (JAIR17, HSDIP17)</h4>
+<div class="outline-text-4" id="text-2-2-2">
 <div class="org-src-container">
 
 <pre class="src src-bash"><span style="color: #a020f0;">while</span> true
@@ -543,9 +365,9 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline11" class="outline-4">
-<h4 id="orgheadline11"><span class="section-number-4">2.5.3</span> A* as satisficing search</h4>
-<div class="outline-text-4" id="text-2-5-3">
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">2.2.3</span> A* as satisficing search (JAIR17, HSDIP17)</h4>
+<div class="outline-text-4" id="text-2-2-3">
 <div class="org-src-container">
 
 <pre class="src src-bash"><span style="color: #a020f0;">while</span> true
@@ -565,9 +387,9 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 </div>
 </div>
 
-<div id="outline-container-orgheadline12" class="outline-4">
-<h4 id="orgheadline12"><span class="section-number-4">2.5.4</span> A* as satisficing search</h4>
-<div class="outline-text-4" id="text-2-5-4">
+<div id="outline-container-orgheadline9" class="outline-4">
+<h4 id="orgheadline9"><span class="section-number-4">2.2.4</span> A* as satisficing search (JAIR17, HSDIP17)</h4>
+<div class="outline-text-4" id="text-2-2-4">
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span7">
@@ -607,8 +429,8 @@ Implication:
 
 </div>
 <div class="span5">
-<div class="larger">
 <ul class="org-ul">
+<li>We evaluated several instances and improved the performance</li>
 <li>Results are optimal as long as <b>f</b> is admissible</li>
 </ul>
 
@@ -618,7 +440,7 @@ Implication:
 
 </div>
 
-</div>
+
 
 <div class="larger">
 <ul class="org-ul">
@@ -631,8 +453,8 @@ Implication:
 </div>
 </div>
 
-<div id="outline-container-orgheadline25" class="outline-2">
-<h2 id="orgheadline25"><span class="section-number-2">3</span> The Problems</h2>
+<div id="outline-container-orgheadline21" class="outline-2">
+<h2 id="orgheadline21"><span class="section-number-2">3</span> The Problems</h2>
 <div class="outline-text-2" id="text-3">
 <ul class="org-ul">
 <li><i>Different classes of algorithms (optimal vs. satisficing search)</i> <b>DONE</b>
@@ -643,15 +465,11 @@ Implication:
 <ul class="org-ul">
 <li>Not able to discuss the algorithm behavior</li>
 </ul></li>
-<li>Simply wide variety of algorithms
-<ul class="org-ul">
-<li>Methods for analysis should be sufficiently general</li>
-</ul></li>
 </ul>
 </div>
 
-<div id="outline-container-orgheadline15" class="outline-3">
-<h3 id="orgheadline15"><span class="section-number-3">3.1</span> Heuristic Satisficing Search</h3>
+<div id="outline-container-orgheadline12" class="outline-3">
+<h3 id="orgheadline12"><span class="section-number-3">3.1</span> Heuristic Satisficing Search</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Less requirements → a <b>larger</b> variety of algorithms &amp; ad-hoc ness
@@ -676,6 +494,13 @@ Less requirements → a <b>larger</b> variety of algorithms &amp; ad-hoc ness
 </thead>
 <tbody>
 <tr>
+<td class="org-left">Minimize the cost of eval.</td>
+<td class="org-left">Lazy Eval</td>
+<td class="org-left">○</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
 <td class="org-left">Avoid local minima</td>
 <td class="org-left">Randomization</td>
 <td class="org-left">✗</td>
@@ -694,13 +519,6 @@ Less requirements → a <b>larger</b> variety of algorithms &amp; ad-hoc ness
 <td class="org-left">✗</td>
 </tr>
 </tbody>
-<tbody>
-<tr>
-<td class="org-left">Minimize heuristic eval.</td>
-<td class="org-left">Lazy Eval</td>
-<td class="org-left">○</td>
-</tr>
-</tbody>
 </table>
 
 <p>
@@ -717,8 +535,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline21" class="outline-3">
-<h3 id="orgheadline21"><span class="section-number-3">3.2</span> Search Diversification</h3>
+<div id="outline-container-orgheadline18" class="outline-3">
+<h3 id="orgheadline18"><span class="section-number-3">3.2</span> Search Diversification</h3>
 <div class="outline-text-3" id="text-3-2">
 
 <div class="figure">
@@ -727,8 +545,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline16" class="outline-4">
-<h4 id="orgheadline16"><span class="section-number-4">3.2.1</span> Search Diversification</h4>
+<div id="outline-container-orgheadline13" class="outline-4">
+<h4 id="orgheadline13"><span class="section-number-4">3.2.1</span> Search Diversification</h4>
 <div class="outline-text-4" id="text-3-2-1">
 
 <div class="figure">
@@ -738,8 +556,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline17" class="outline-4">
-<h4 id="orgheadline17"><span class="section-number-4">3.2.2</span> Search Diversification</h4>
+<div id="outline-container-orgheadline14" class="outline-4">
+<h4 id="orgheadline14"><span class="section-number-4">3.2.2</span> Search Diversification</h4>
 <div class="outline-text-4" id="text-3-2-2">
 
 <div class="figure">
@@ -749,8 +567,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline18" class="outline-4">
-<h4 id="orgheadline18"><span class="section-number-4">3.2.3</span> Search Diversification</h4>
+<div id="outline-container-orgheadline15" class="outline-4">
+<h4 id="orgheadline15"><span class="section-number-4">3.2.3</span> Search Diversification</h4>
 <div class="outline-text-4" id="text-3-2-3">
 
 <div class="figure">
@@ -760,8 +578,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline19" class="outline-4">
-<h4 id="orgheadline19"><span class="section-number-4">3.2.4</span> Search Diversification</h4>
+<div id="outline-container-orgheadline16" class="outline-4">
+<h4 id="orgheadline16"><span class="section-number-4">3.2.4</span> Search Diversification</h4>
 <div class="outline-text-4" id="text-3-2-4">
 
 <div class="figure">
@@ -771,8 +589,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline20" class="outline-4">
-<h4 id="orgheadline20"><span class="section-number-4">3.2.5</span> Search Diversification</h4>
+<div id="outline-container-orgheadline17" class="outline-4">
+<h4 id="orgheadline17"><span class="section-number-4">3.2.5</span> Search Diversification</h4>
 <div class="outline-text-4" id="text-3-2-5">
 
 <div class="figure">
@@ -783,8 +601,8 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 </div>
 
-<div id="outline-container-orgheadline22" class="outline-3">
-<h3 id="orgheadline22"><span class="section-number-3">3.3</span> Two modes of diversification : Intra-plateau and Inter-plateau (ICAPS17)</h3>
+<div id="outline-container-orgheadline19" class="outline-3">
+<h3 id="orgheadline19"><span class="section-number-3">3.3</span> Two modes of diversification : Intra-plateau and Inter-plateau (ICAPS17)</h3>
 <div class="outline-text-3" id="text-3-3">
 
 <div class="figure">
@@ -793,13 +611,13 @@ Thus we focus on <b>Search Diversification</b>
 </div>
 
 <p>
-Previous methods have the mixed effect of both (e.g. GBFS-LE)
+Previous work have the mixed effect of both (e.g. GBFS-LE)
 </p>
 </div>
 </div>
 
-<div id="outline-container-orgheadline23" class="outline-3">
-<h3 id="orgheadline23"><span class="section-number-3">3.4</span> Intra-vs-Inter are orthogonal &amp; complementary</h3>
+<div id="outline-container-orgheadline20" class="outline-3">
+<h3 id="orgheadline20"><span class="section-number-3">3.4</span> Intra-vs-Inter are orthogonal &amp; complementary</h3>
 <div class="outline-text-3" id="text-3-4">
 <div class="container-fluid">
 <div class="row-fluid">
@@ -814,36 +632,8 @@ Previous methods have the mixed effect of both (e.g. GBFS-LE)
 <div class="span6">
 <ul class="org-ul">
 <li>With both modes enabled, effects combine</li>
-</ul>
-
-</div>
-
-</div>
-
-</div>
-</div>
-</div>
-
-<div id="outline-container-orgheadline24" class="outline-3">
-<h3 id="orgheadline24"><span class="section-number-3">3.5</span> Remove the effect of heuristics from the discussion</h3>
-<div class="outline-text-3" id="text-3-5">
-<div class="container-fluid">
-<div class="row-fluid">
-<div class="span6">
-
-<div class="figure">
-<p><img src="img/diversify/final.png" alt="final.png" />
-</p>
-</div>
-
-</div>
-<div class="span6">
-<ul class="org-ul">
-<li>Both modes are <b>heuristic-agnostic</b>
-<ul class="org-ul">
-<li>→ based on a knowledge-free (blind) method</li>
+<li>Both modes are based on a knowledge-free (blind) method</li>
 <li><b>Now we no longer have to care about heuristics!</b></li>
-</ul></li>
 </ul>
 
 </div>
@@ -855,8 +645,8 @@ Previous methods have the mixed effect of both (e.g. GBFS-LE)
 </div>
 </div>
 
-<div id="outline-container-orgheadline34" class="outline-2">
-<h2 id="orgheadline34"><span class="section-number-2">4</span> The Problems</h2>
+<div id="outline-container-orgheadline31" class="outline-2">
+<h2 id="orgheadline31"><span class="section-number-2">4</span> The Problems</h2>
 <div class="outline-text-2" id="text-4">
 <ul class="org-ul">
 <li><i>Different classes of algorithms (optimal vs. satisficing search)</i> <b>DONE</b>
@@ -874,8 +664,8 @@ Previous methods have the mixed effect of both (e.g. GBFS-LE)
 </ul>
 </div>
 
-<div id="outline-container-orgheadline26" class="outline-3">
-<h3 id="orgheadline26"><span class="section-number-3">4.1</span> Analysing the blind search behavior</h3>
+<div id="outline-container-orgheadline22" class="outline-3">
+<h3 id="orgheadline22"><span class="section-number-3">4.1</span> Analyzing the blind search behavior</h3>
 <div class="outline-text-3" id="text-4-1">
 <p>
 What do we know about blind search? &#x2014; not much
@@ -884,7 +674,6 @@ What do we know about blind search? &#x2014; not much
 <ul class="org-ul">
 <li>Search depth, branching factor</li>
 <li>but they do not describe the actual "shape" of the resulting graph</li>
-<li>W/O state information (e.g. atoms) &#x2014; for continuous domains (e.g. RRT)</li>
 </ul>
 
 
@@ -895,14 +684,14 @@ What do we know about blind search? &#x2014; not much
 </div>
 </div>
 
-<div id="outline-container-orgheadline27" class="outline-3">
-<h3 id="orgheadline27"><span class="section-number-3">4.2</span> Fractals: A mathematical tool to analyse shapes</h3>
+<div id="outline-container-orgheadline23" class="outline-3">
+<h3 id="orgheadline23"><span class="section-number-3">4.2</span> Fractals</h3>
 <div class="outline-text-3" id="text-4-2">
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span6">
 <p>
-Mathematical fractals
+Infinite fractals
 </p>
 
 
@@ -920,7 +709,7 @@ Mathematical fractals
 </div>
 <div class="span6">
 <p>
-Random fractals (we are interested in these)
+<b>Random fractals</b> (our focus)
 </p>
 
 
@@ -937,16 +726,25 @@ Random fractals (we are interested in these)
 </div>
 </div>
 
-<div id="outline-container-orgheadline28" class="outline-3">
-<h3 id="orgheadline28"><span class="section-number-3">4.3</span> Fractal dimension: A mathematical tool to analyse fractals</h3>
+<div id="outline-container-orgheadline24" class="outline-3">
+<h3 id="orgheadline24"><span class="section-number-3">4.3</span> Fractal Dimension</h3>
 <div class="outline-text-3" id="text-4-3">
 <p>
-How the number of points react to the different scaling
+A real number characterizing each shape
 </p>
 
+<ul class="org-ul">
+<li>How the number of points react to the different scaling</li>
+
+<li>Represent the <b>sparseness</b> of a shape wrto space dimension</li>
+</ul>
+
+<div class="smaller">
 <p>
 Note: Complicated <i>measure theory</i> involved, we don't have to deal with the details
 </p>
+
+</div>
 
 
 <div class="figure">
@@ -956,11 +754,15 @@ Note: Complicated <i>measure theory</i> involved, we don't have to deal with the
 </div>
 </div>
 
-<div id="outline-container-orgheadline29" class="outline-3">
-<h3 id="orgheadline29"><span class="section-number-3">4.4</span> Bond Invasion Percolation (ICAPS17)</h3>
+<div id="outline-container-orgheadline25" class="outline-3">
+<h3 id="orgheadline25"><span class="section-number-3">4.4</span> Bond Invasion Percolation (ICAPS17)</h3>
 <div class="outline-text-3" id="text-4-4">
 <p>
-A practical diversification method based on a fractal
+A practical diversification for Classical Planning
+</p>
+
+<p>
+　
 </p>
 
 
@@ -971,8 +773,8 @@ A practical diversification method based on a fractal
 </div>
 </div>
 
-<div id="outline-container-orgheadline30" class="outline-3">
-<h3 id="orgheadline30"><span class="section-number-3">4.5</span> Improves performance as a diversification method (ICAPS17)</h3>
+<div id="outline-container-orgheadline26" class="outline-3">
+<h3 id="orgheadline26"><span class="section-number-3">4.5</span> Improves the performance as a diversification method (ICAPS17)</h3>
 <div class="outline-text-3" id="text-4-5">
 <p>
 Benchmark on FF heuristic
@@ -1012,13 +814,9 @@ Benchmark on FF heuristic
 </div>
 </div>
 
-<div id="outline-container-orgheadline32" class="outline-3">
-<h3 id="orgheadline32"><span class="section-number-3">4.6</span> Analysing Various Search Algorithms as Fractals</h3>
+<div id="outline-container-orgheadline28" class="outline-3">
+<h3 id="orgheadline28"><span class="section-number-3">4.6</span> Search algorithm == Generator of a (random) fractal</h3>
 <div class="outline-text-3" id="text-4-6">
-<p>
-(Randomized) search algorithm == Generator of a (random) fractal
-</p>
-
 
 <div class="figure">
 <p><img src="img/fractals/eden.png" alt="eden.png" />
@@ -1026,13 +824,9 @@ Benchmark on FF heuristic
 </div>
 </div>
 
-<div id="outline-container-orgheadline31" class="outline-4">
-<h4 id="orgheadline31"><span class="section-number-4">4.6.1</span> Analysing Various Search Algorithms as Fractals</h4>
+<div id="outline-container-orgheadline27" class="outline-4">
+<h4 id="orgheadline27"><span class="section-number-4">4.6.1</span> Search algorithm == Generator of a (random) fractal</h4>
 <div class="outline-text-4" id="text-4-6-1">
-<p>
-(Randomized) search algorithm == Generator of a (random) fractal
-</p>
-
 
 <div class="figure">
 <p><img src="img/fractals/eden-2.png" alt="eden-2.png" />
@@ -1042,13 +836,20 @@ Benchmark on FF heuristic
 </div>
 </div>
 
-<div id="outline-container-orgheadline33" class="outline-3">
-<h3 id="orgheadline33"><span class="section-number-3">4.7</span> Fractals offer a mathematical tools to analyse algorithms</h3>
+<div id="outline-container-orgheadline29" class="outline-3">
+<h3 id="orgheadline29"><span class="section-number-3">4.7</span> Analysing Various Search Algorithms as Fractals</h3>
 <div class="outline-text-3" id="text-4-7">
-<p>
-Example:
-</p>
 
+<div class="figure">
+<p><img src="img/fractals/fractal3.png" alt="fractal3.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgheadline30" class="outline-3">
+<h3 id="orgheadline30"><span class="section-number-3">4.8</span> Example: Understanding the min. sparseness</h3>
+<div class="outline-text-3" id="text-4-8">
 
 <div class="figure">
 <p><img src="img/fractals/intersection.png" alt="intersection.png" />
@@ -1058,8 +859,8 @@ Example:
 </div>
 </div>
 
-<div id="outline-container-orgheadline35" class="outline-2">
-<h2 id="orgheadline35"><span class="section-number-2">5</span> Conclusion</h2>
+<div id="outline-container-orgheadline32" class="outline-2">
+<h2 id="orgheadline32"><span class="section-number-2">5</span> Conclusion</h2>
 <div class="outline-text-2" id="text-5">
 <ul class="org-ul">
 <li>Unified Search Theory<sup>TM</sup>:
@@ -1074,7 +875,7 @@ Example:
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Masataro Asai</p>
-<p class="date">Created: 2017-06-16 金 11:06</p>
+<p class="date">Created: 2017-06-18 日 09:55</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

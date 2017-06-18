@@ -27,11 +27,11 @@ Made by guicho2.71828 (Masataro Asai)
 #+end_note
 #+end_outline-text-1
 
-* Introduction
+* Introduction & Motivation
 
 + 
   #+begin_larger
-  There are so many algorithms
+  *There are too many algorithms!*
 
   (A*, LA*, PEA*, GBFS, LS, MRW, MCTS, RRT... LAMA, probe, etc...)
   #+end_larger
@@ -47,12 +47,12 @@ Made by guicho2.71828 (Masataro Asai)
 
 + Different classes of algorithms (optimal vs. satisficing search)
   + Different theoretical requirements
-+ The behavior might be affected by the heuristic functions
-  + Not able to discuss the algorithm behavior
-+ Simply wide variety of algorithms
-  + Methods for analysis should be sufficiently general
+# + The behavior might be affected by the heuristic functions
+#   + Not able to discuss the algorithm behavior
+# + Simply wide variety of algorithms
+#   + Methods for analysis should be sufficiently general
 
-** The beginning: A* tiebreaking (AAAI2016)
+** The beginning: A* tiebreaking (AAAI2016)                        :noexport:
 
 Standard A* OPEN list [f,h,＊] is sorted by lexicographical ordering
 
@@ -70,7 +70,7 @@ Random Depth Tiebreaking [f,h,<d>,*] : Balanced expansion among *plateau depths*
 + <d>: Randomly select a /depth bucket/ : depth = steps from the nearest ancestor with the same f,h
 + ＊ : Implicitly sort by FIFO or LIFO or Random (/default tiebreaking/)
 
-** The beginning: A* tiebreaking (AAAI2016)
+** The beginning: A* tiebreaking (AAAI2016)                        :noexport:
 
 Tiebreaking in A* by balancing the search depth in each plateau → improved performance
 
@@ -103,7 +103,7 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 #+end_row-fluid
 #+end_container-fluid
 
-** Very similar concept was used for satisficing search, with a different context
+** Very similar concept was used for satisficing search, with a different context :noexport:
 
 *Type-GBFS: Search Diversification* method for *GBFS* (satisficing search)
 
@@ -121,19 +121,27 @@ Diversified search in each plateau compared to LIFO (=DFS), FIFO (=BrFS)
 + Will it blend? (Yes it does!)
 #+end_xlarge
 
-** A* behavior revisited
+** A* (optimal search) works as follows
+
+Expands the nodes in increasing order of *f* value
 
 [[png:astar/astar1]]
 
-*** A* behavior revisited
+*** A* (optimal search) works as follows
+
+Expands the nodes in increasing order of *f* value
 
   [[png:astar/astar2]]
 
-*** A* behavior revisited
+*** A* (optimal search) works as follows
+
+Expands the nodes in increasing order of *f* value
 
   [[png:astar/astar3]]
 
-*** A* behavior revisited
+*** A* (optimal search) works as follows
+
+Expands the nodes in increasing order of *f* value
 
  [[png:astar/astar4]]
 
@@ -161,7 +169,7 @@ while true
        Increase f
 #+end_src
 
-*** A* as satisficing search
+*** A* as satisficing search (JAIR17, HSDIP17)
 
  #+begin_src bash
  while true
@@ -174,7 +182,7 @@ while true
 
 [[png:sat/sat-astar1]]
 
-*** A* as satisficing search
+*** A* as satisficing search (JAIR17, HSDIP17)
 
  #+begin_src bash
  while true
@@ -187,7 +195,7 @@ while true
 
 [[png:sat/sat-astar2]]
 
-*** A* as satisficing search
+*** A* as satisficing search (JAIR17, HSDIP17)
 
  #+begin_src bash
  while true
@@ -200,7 +208,7 @@ while true
 
 [[png:sat/sat-astar3]]
 
-*** A* as satisficing search
+*** A* as satisficing search (JAIR17, HSDIP17)
 
 #+begin_container-fluid
 #+begin_row-fluid
@@ -226,12 +234,13 @@ Implication:
 [[png:sat/sat-astar4]]
 #+end_span7
 #+begin_span5
-#+begin_larger
++ We evaluated several instances and improved the performance
 + Results are optimal as long as *f* is admissible
-#+end_larger
 #+end_span5
 #+end_row-fluid
 #+end_container-fluid
+
+
 
 #+begin_larger
 + Now forget about *optimal*, let's focus on *satisficing*
@@ -243,22 +252,22 @@ Implication:
   + /Different theoretical requirements/
 + *The behavior might be affected by the heuristic functions*
   + Not able to discuss the algorithm behavior
-+ Simply wide variety of algorithms
-  + Methods for analysis should be sufficiently general
+# + Simply wide variety of algorithms
+#   + Methods for analysis should be sufficiently general
 
 ** Heuristic Satisficing Search
 
 Less requirements → a *larger* variety of algorithms & ad-hoc ness
 
-| Purposes                 | Approach      | Affect $h$ ? |
-|--------------------------+---------------+--------------|
-| Avoid local minima       | Randomization | ✗            |
-|--------------------------+---------------+--------------|
-| Escaping local minima    | Local Search  | ✗            |
-|                          | Preferred Ops | ✗            |
-|--------------------------+---------------+--------------|
-| Minimize heuristic eval. | Lazy Eval     | ○           |
-|--------------------------+---------------+--------------|
+| Purposes                   | Approach      | Affect $h$ ? |
+|----------------------------+---------------+--------------|
+| Minimize the cost of eval. | Lazy Eval     | ○           |
+|----------------------------+---------------+--------------|
+| Avoid local minima         | Randomization | ✗            |
+|----------------------------+---------------+--------------|
+| Escaping local minima      | Local Search  | ✗            |
+|                            | Preferred Ops | ✗            |
+|----------------------------+---------------+--------------|
 
 Lazy Eval == using a different heuristics
 
@@ -290,7 +299,7 @@ Thus we focus on *Search Diversification*
 
 [[png:plateau/final]]
 
-Previous methods have the mixed effect of both (e.g. GBFS-LE)
+Previous work have the mixed effect of both (e.g. GBFS-LE)
 
 ** Intra-vs-Inter are orthogonal & complementary
 
@@ -301,21 +310,8 @@ Previous methods have the mixed effect of both (e.g. GBFS-LE)
 #+end_span6
 #+begin_span6
 + With both modes enabled, effects combine
-#+end_span6
-#+end_row-fluid
-#+end_container-fluid
-
-** Remove the effect of heuristics from the discussion
-
-#+begin_container-fluid
-#+begin_row-fluid
-#+begin_span6
-[[png:diversify/final]]
-#+end_span6
-#+begin_span6
-+ Both modes are *heuristic-agnostic*
-  + → based on a knowledge-free (blind) method
-  + *Now we no longer have to care about heuristics!*
++ Both modes are based on a knowledge-free (blind) method
++ *Now we no longer have to care about heuristics!*
 #+end_span6
 #+end_row-fluid
 #+end_container-fluid
@@ -329,50 +325,58 @@ Previous methods have the mixed effect of both (e.g. GBFS-LE)
 + *Simply wide variety of algorithms* 
   + Methods for analysis should be sufficiently general
 
-** Analysing the blind search behavior
+** Analyzing the blind search behavior
 
 What do we know about blind search? --- not much
 
 + Search depth, branching factor
 + but they do not describe the actual "shape" of the resulting graph
-+ W/O state information (e.g. atoms) --- for continuous domains (e.g. RRT)
+# + W/O state information (e.g. atoms) --- for continuous domains (e.g. RRT)
 
 [[png:fractals/shape]]
 
-** Fractals: A mathematical tool to analyse shapes
+** Fractals
 
 #+begin_container-fluid
 #+begin_row-fluid
 #+begin_span6
-Mathematical fractals
+Infinite fractals
 
 [[sgif:koch]]
 
 [[sgif:sierpinski]]
 #+end_span6
 #+begin_span6
-Random fractals (we are interested in these)
+*Random fractals* (our focus)
 
 [[png:fractals/dla]]
 #+end_span6
 #+end_row-fluid
 #+end_container-fluid
 
-** Fractal dimension: A mathematical tool to analyse fractals
+** Fractal Dimension
 
-How the number of points react to the different scaling
+A real number characterizing each shape
 
++ How the number of points react to the different scaling
+
++ Represent the *sparseness* of a shape wrto space dimension
+
+#+begin_smaller
 Note: Complicated /measure theory/ involved, we don't have to deal with the details
+#+end_smaller
 
 [[png:fractals/dimention]]
 
 ** Bond Invasion Percolation (ICAPS17)
 
-A practical diversification method based on a fractal
+A practical diversification for Classical Planning
+
+　
 
 [[png:fractals/bip]]
 
-** Improves performance as a diversification method (ICAPS17)
+** Improves the performance as a diversification method (ICAPS17)
 
 Benchmark on FF heuristic
 
@@ -382,21 +386,19 @@ Benchmark on FF heuristic
 | (inter + intra plateau) Type-based |             223.9 |
 | (inter + intra plateau) BIP        |           *237.7* |
 
-** Analysing Various Search Algorithms as Fractals
-
-(Randomized) search algorithm == Generator of a (random) fractal
+** Search algorithm == Generator of a (random) fractal
 
 [[png:fractals/eden]]
 
-*** Analysing Various Search Algorithms as Fractals
-
-(Randomized) search algorithm == Generator of a (random) fractal
+*** Search algorithm == Generator of a (random) fractal
 
 [[png:fractals/eden-2]]
 
-** Fractals offer a mathematical tools to analyse algorithms
+** Analysing Various Search Algorithms as Fractals
 
-Example:
+[[png:fractals/fractal3]]
+
+** Example: Understanding the min. sparseness
 
 [[png:fractals/intersection]]
 

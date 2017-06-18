@@ -2,9 +2,9 @@ make[1]: 警告: 副次 make で -jN を強制指定しました: jobserver モ�
 make[1]: ディレクトリ '/home/guicho/repos/presentations/2017-6-18-dc' に入ります
 make -C img
 make -C css
+make[2]: ディレクトリ '/home/guicho/repos/presentations/2017-6-18-dc/img' に入ります
 make[2]: ディレクトリ '/home/guicho/repos/presentations/2017-6-18-dc/css' に入ります
 sass --update .
-make[2]: ディレクトリ '/home/guicho/repos/presentations/2017-6-18-dc/img' に入ります
 make[2]: 'all' に対して行うべき事はありません.
 make[2]: ディレクトリ '/home/guicho/repos/presentations/2017-6-18-dc/img' から出ます
 make -C scripts
