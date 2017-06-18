@@ -416,11 +416,11 @@ Benchmark on FF heuristic
     #+begin_alignright
     → a combination of blind searches
     #+end_alignright
-  + (*ICAPS17++*) Fractal theory: Mathematical tools for blind search
+  + (*ICAPS17++*) Fractals: Mathematical tools for blind search
 #+end_larger
 
 #+begin_alignright
-I have a lot other topics too! (e.g. KEPS talk for DLNN+Planning)
++ I have a lot other topics too! (visit my KEPS talk for DLNN+Planning)
 #+end_alignright
 
 * Old materials
