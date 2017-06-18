@@ -408,10 +408,14 @@ Benchmark on FF heuristic
 + Unified Search Theory^{TM}:
   + (*JAIR17*) Optimal search (A*)
     
+    #+begin_alignright
     → a sequence of satisficing search
+    #+end_alignright
   + (*ICAPS17*) Satisficing heuristic search
     
+    #+begin_alignright
     → a combination of blind searches
+    #+end_alignright
   + (*ICAPS17+*) Fractal theory: Mathematical tools for blind search
 #+end_larger
 
