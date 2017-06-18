@@ -404,10 +404,16 @@ Benchmark on FF heuristic
 
 * Conclusion
 
+#+begin_larger
 + Unified Search Theory^{TM}:
-  + Optimal search (A*) is a sequence of satisficing search
-  + Satisficing heuristic search is a combination of blind search
-  + Fractal theory provides mathematical tools for understanding blind search
+  + (*JAIR17*) Optimal search (A*)
+    
+    → a sequence of satisficing search
+  + (*ICAPS17*) Satisficing heuristic search
+    
+    → a combination of blind searches
+  + (*ICAPS17+*) Fractal theory: Mathematical tools for blind search
+#+end_larger
 
 * Old materials                                                    :noexport:
 
