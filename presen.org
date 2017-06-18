@@ -331,7 +331,7 @@ What do we know about blind search? --- not much
 
 + Search depth, branching factor
 + but they do not describe the actual "shape" of the resulting graph
-+ In a *representation-independent* way --- e.g. support continuous domains (e.g. RRT)
++ In a *representation-independent* way --- e.g. support discrete (planning) / continuous domains (e.g. RRT)
 
 [[png:fractals/shape]]
 
