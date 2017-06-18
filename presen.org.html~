@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2017-06-18 日 10:01 -->
+<!-- 2017-06-18 日 11:49 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="viewport" content="width=device-width, initial-scale=1" />
 <title>Exploiting Search Space Structure in Classical Planning: Analyses and Algorithms (DC talk)</title>
@@ -674,6 +674,7 @@ What do we know about blind search? &#x2014; not much
 <ul class="org-ul">
 <li>Search depth, branching factor</li>
 <li>but they do not describe the actual "shape" of the resulting graph</li>
+<li>In a representation-independent way &#x2014; for continuous domains (e.g. RRT)</li>
 </ul>
 
 
@@ -889,6 +890,13 @@ Benchmark on FF heuristic
 <li>(<b>ICAPS17+</b>) Fractal theory: Mathematical tools for blind search</li>
 </ul></li>
 </ul>
+
+</div>
+
+<div class="alignright">
+<p>
+I have a lot other topics too! (Come to KEPS talk for DLNN+Planning !)
+</p>
 
 </div>
 </div>
@@ -1324,7 +1332,7 @@ Thank you for listening!
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Masataro Asai</p>
-<p class="date">Created: 2017-06-18 日 10:01</p>
+<p class="date">Created: 2017-06-18 日 11:49</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
