@@ -418,8 +418,8 @@ Benchmark on FF heuristic
     #+end_alignright
   + (*ICAPS17+*) Fractal theory: Mathematical tools for blind search
 #+end_larger
-
-* Old materials                                                    :noexport:
+    
+* Old materials
 
 ** Proposal: Unifying Framework for Analyzing Search Space
 
