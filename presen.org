@@ -299,7 +299,7 @@ Thus we focus on *Search Diversification*
 
 [[png:plateau/final]]
 
-Previous work have the mixed effect of both (e.g. GBFS-LE)
+Previous work have the mixed effect of both (e.g. GBFS-LE, MRW)
 
 ** Intra-vs-Inter are orthogonal & complementary
 
@@ -331,7 +331,7 @@ What do we know about blind search? --- not much
 
 + Search depth, branching factor
 + but they do not describe the actual "shape" of the resulting graph
-+ In a representation-independent way --- for continuous domains (e.g. RRT)
++ In a *representation-independent* way --- e.g. support discrete (planning) / continuous domains (e.g. RRT)
 
 [[png:fractals/shape]]
 
@@ -416,11 +416,11 @@ Benchmark on FF heuristic
     #+begin_alignright
     → a combination of blind searches
     #+end_alignright
-  + (*ICAPS17+*) Fractal theory: Mathematical tools for blind search
+  + (*ICAPS17++*) Fractals: Mathematical tools for blind search
 #+end_larger
 
 #+begin_alignright
-I have a lot other topics too! (Come to KEPS talk for DLNN+Planning !)
++ I have a lot other topics too! (visit my KEPS talk for DLNN+Planning)
 #+end_alignright
 
 * Old materials
